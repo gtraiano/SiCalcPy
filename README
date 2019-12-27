@@ -1,0 +1,5 @@
+My first program in Python. It is a very simple calculator.
+Parses an expression string and extracts operators and operands.
+No use of syntax tree, thus limited capabilities (nesting, priority...)
+
+To run: python Terminal.py
