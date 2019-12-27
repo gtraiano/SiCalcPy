@@ -16,15 +16,17 @@ class Calculator:
         store, recall, clear
     """
     
-    # TODO: improve regular expressions so that they deal with signed numbers
     # TODO: add more functions (e.g. log, sqrt)
     
     def __init__(self):
         self.operators = queue.SimpleQueue()
         self.operands = queue.SimpleQueue()
-        self.operators_pattern = r'[%*/+^-]|mod'
-        self.operands_pattern = r'\d+\.?\d*'
-        self.valid_expr_pattern = r'^\s*(\d+\.?\d*)(?:\s*([-%+^*/]|mod)\s*(\d+\.?\d*)\s*)+$|store|recall|clear|help'
+        #self.operators_pattern = r'[%*/+^-]|mod'
+        #self.operands_pattern = r'\d+\.?\d*'
+        #self.valid_expr_pattern = r'^\s*(\d+\.?\d*)(?:\s*([-%+^*/]|mod)\s*(\d+\.?\d*)\s*)+$|store|recall|clear|help'
+        self.operators_pattern = r'(?<=\d|[ \t])[-+*/]|mod'
+        self.operands_pattern = r'(?<!\d)-?\d+\.?\d*'
+        self.valid_expr_pattern = r'^\s*((?<!\d)-?\d+\.?\d*)(?:\s*((?<=\d|[ \t])[-+*/]|mod)\s*((?<!\d)-?\d+\.?\d*)\s*)+$|store|recall|clear|help'
         self.operators_re = re.compile(self.operators_pattern)
         self.operands_re = re.compile(self.operands_pattern)
         self.valid_expr_re = re.compile(self.valid_expr_pattern, re.I)
