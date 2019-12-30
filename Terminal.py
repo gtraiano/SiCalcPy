@@ -17,6 +17,7 @@ class Terminal:
             
             if not self.calc.is_valid_expression(self.input):
                 print("Invalid input")
+            
             else:
                 try:
                     if self.input == "store":
@@ -26,12 +27,13 @@ class Terminal:
                     elif self.input == "recall":
                         print("Recalled", self.calc.recall())
                         print("> ", self.calc.recall(), sep = "", end = "")
-                        self.input = ""
-                        self.input = str(self.calc.recall()) + input().lower()
+                        self.input = "" # empty input
+                        self.input = str(self.calc.recall()) + input().lower() # attach recall value and user input
+                        
                         if not self.calc.is_valid_expression(self.input):
-                            print(self.input)
                             print("Invalid input")
                             continue
+                        
                         print(self.input, "=", self.calc.calculate(self.input))
                         
                     elif self.input == "clear":
