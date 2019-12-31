@@ -5,46 +5,46 @@ class Terminal:
     A terminal for the Calculator class
     """
     def __init__(self):
-        self.input = ""
-        self.calc = Calculator()
+        self._input = ""
+        self._calc = Calculator()
 
     def main(self):
         while True:
-            self.input = input("> ").lower()
+            self._input = input("> ").lower()
             
-            if self.input == "exit":
+            if self._input == "exit":
                 break
             
-            if not self.calc.is_valid_expression(self.input):
-                print("Invalid input")
+            if not self._calc.is_valid_expression(self._input):
+                print("Invalid _input")
             
             else:
                 try:
-                    if self.input == "store":
-                        self.calc.store()
-                        print("Stored", self.calc.recall())
+                    if self._input == "store":
+                        self._calc.store()
+                        print("Stored", self._calc.recall())
                     
-                    elif self.input == "recall":
-                        print("Recalled", self.calc.recall())
-                        print("> ", self.calc.recall(), sep = "", end = "")
-                        self.input = "" # empty input
-                        self.input = str(self.calc.recall()) + input().lower() # attach recall value and user input
+                    elif self._input == "recall":
+                        print("Recalled", self._calc.recall())
+                        print("> ", self._calc.recall(), sep = "", end = "")
+                        self._input = "" # empty _input
+                        self._input = str(self._calc.recall()) + input().lower() # attach recall value, then user input
                         
-                        if not self.calc.is_valid_expression(self.input):
-                            print("Invalid input")
+                        if not self._calc.is_valid_expression(self._input):
+                            print("Invalid _input")
                             continue
                         
-                        print(self.input, "=", self.calc.calculate(self.input))
+                        print(self._input, "=", self._calc.calculate(self._input))
                         
-                    elif self.input == "clear":
-                        self.calc.clear()
+                    elif self._input == "clear":
+                        self._calc.clear()
                         print("Cleared")
                     
-                    elif self.input == "help":
-                        self.calc.help()
+                    elif self._input == "help":
+                        self._calc.help()
                     
                     else:
-                        print(self.input, "=", self.calc.calculate(self.input))
+                        print(self._input, "=", self._calc.calculate(self._input))
                 
                 except (ZeroDivisionError, ValueError) as e:
                     print(e)
