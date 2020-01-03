@@ -1,6 +1,7 @@
 import re
 import queue
-from math import fmod
+#from math import fmod
+import math
 
 class Calculator:
     """
@@ -16,15 +17,15 @@ class Calculator:
         store, recall, clear
     """
     
-    # TODO: add more functions (e.g. log, sqrt)
+    # TODO: include sqrt and log in complex expressions (not only stand-alone)
     
     def __init__(self):
         self._operators = queue.SimpleQueue()
         self._operands = queue.SimpleQueue()
         
-        self._operators_pattern = r'(?<=\d)(?:[-+*/%]|mod)'
+        self._operators_pattern = r'(?<=\d)(?:[-+*/%^]|mod)|sqrt|log'
         self._operands_pattern = r'(?<!\d)-?\d+\.?\d*'
-        self._valid_expr_pattern = r'^\s*((?<!\d)-?\d+\.?\d*)(?:\s*((?<=\d|\s)[-+*/%]|mod)\s*((?<!\d)-?\d+\.?\d*)\s*)+$|store|recall|clear|help'
+        self._valid_expr_pattern = r'^\s*((?<!\d)-?\d+\.?\d*)(?:\s*((?<=\d|\s)[-+*/%^]|mod)\s*((?<!\d)-?\d+\.?\d*)\s*)+$|^\s*(?:(sqrt|log)\s*((?<!\d)-?\d+\.?\d*))\s*$|store|recall|clear|help'
         
         self._operators_re = re.compile(self._operators_pattern)
         self._operands_re = re.compile(self._operands_pattern)
@@ -49,6 +50,13 @@ class Calculator:
         self._calc_result = 0.0
     
     def calculate(self, expr: str) -> float:
+        # Issues to be aware of:
+        # 1. Strip spaces from input before extracting operators and operands,
+        #    makes operators re work properly in all cases
+        #
+        # 2. If dealing with sqrt or log expression, watch out for empty operands
+        #    queue
+        
         stripped_expr = "".join(expr.split()) # strip spaces from expr
         self._extract_operands(stripped_expr)
         self._extract_operators(stripped_expr)
@@ -57,7 +65,10 @@ class Calculator:
         
         while not self._operators.empty():
             op = self._operators.get()
-            b = self._operands.get()
+            try:
+                b = self._operands.get(block=False)
+            except queue.Empty: # for sqrt and log, operands is already empty
+                pass
             
             if op == '+':
                 self._calc_result += b
@@ -75,10 +86,20 @@ class Calculator:
                 self._calc_result **= b
             elif op == '%' or op == 'mod':
                 if b != 0:
-                    self._calc_result = fmod(self._calc_result, b);
+                    self._calc_result = math.fmod(self._calc_result, b);
                 else:
                     self._reset()
                     raise ValueError("Modulo 0 is not defined")
+            elif op == "sqrt":
+                if self._calc_result >= 0:
+                    self._calc_result = math.sqrt(self._calc_result)
+                else:
+                    raise ValueError('Square root of negative number is not defined')
+            elif op == "log":
+                if self._calc_result > 0:
+                    self._calc_result = math.log10(self._calc_result)
+                else:
+                    raise ValueError('Logarithm of negative number is not defined')
                     
         return self._calc_result
     
@@ -103,6 +124,8 @@ class Calculator:
             / : Division
             % or mod : Modulo
             ^ : Power
+            sqrt : Square root
+            log : Logarithm base 10
             
             Available commands
             store : Store result in memory
