@@ -1,6 +1,5 @@
 import re
 import queue
-#from math import fmod
 import math
 
 class Calculator:
@@ -11,13 +10,13 @@ class Calculator:
     ported.
     
     Supports the following arithmetic operations:
-        +, -, *, /, ^, mod
+        +, -, *, /, ^, mod, sqrt, log
     
     Other supported commands:
         store, recall, clear
     """
     
-    # TODO: include sqrt and log in complex expressions (not only stand-alone)
+    # TODO: include sqrt and log in complex expressions
     
     def __init__(self):
         self._operators = queue.SimpleQueue()
@@ -52,10 +51,10 @@ class Calculator:
     def calculate(self, expr: str) -> float:
         # Issues to be aware of:
         # 1. Strip spaces from input before extracting operators and operands,
-        #    makes operators re work properly in all cases
+        #    to make sure operators re work properly
         #
-        # 2. If dealing with sqrt or log expression, watch out for empty operands
-        #    queue
+        # 2. First operand is assigned to result, so when dealing with unary 
+        #    operators sqrt & log, watch out for empty operands queue
         
         stripped_expr = "".join(expr.split()) # strip spaces from expr
         self._extract_operands(stripped_expr)
